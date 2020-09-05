@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=djvideomem
+POSTGRES_USER=pkGIbXhNYaiIIVcDXrFDzJuemBTRxNrZ
+POSTGRES_PASSWORD=VxkpKZkiZvp7J9zkvyAjZfI2jG9wriG5ZMmU7GJM257HDUA0bIzKAATziJ2MrsTH
