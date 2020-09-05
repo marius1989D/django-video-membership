@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "djvideomem.content.apps.ContentConfig",
     "djvideomem.users.apps.UsersConfig",
     # Your stuff: custom apps go here
 ]
