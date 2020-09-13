@@ -14,9 +14,13 @@ User = get_user_model()
 
 class Pricing(models.Model):
     name = models.CharField(max_length=100)  # Basic / Pro / Premium
+    slug = models.SlugField()
+    stripe_price_id = models.CharField(max_length=50)
+    price = models.DecimalField(decimal_places=2, max_digits=5)
+    currency = models.CharField(max_length=50)
 
     def __str__(self): # pylint: disable=invalid-str-returned
-        return self.name 
+        return self.name
 
 
 class Subscription(models.Model):

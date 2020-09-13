@@ -1,9 +1,18 @@
 from django.conf import settings
 from django.http import JsonResponse
 from django.views import generic
+from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
+from rest_framework.response import Response
 import stripe
 
+from djvideomem.content.models import Pricing
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class EnrollView(generic.TemplateView):
+    template_name = "payment/enroll.html"
 
 
 class PaymentView(generic.TemplateView):
@@ -11,20 +20,20 @@ class PaymentView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PaymentView, self).get_context_data(**kwargs)
+        pricing = get_object_or_404(Pricing, slug=kwargs["slug"])
         context.update({
+            "pricing_tier": pricing,
             "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
         })
         return context
 
 
-# Set your secret key. Remember to switch to your live secret key in production!
-# See your keys here: https://dashboard.stripe.com/account/apikeys
-stripe.api_key = 'sk_test_g3fGRntRLCvg5iY5tQ61u0Zu00TKJbGejH'
-
-class CreateSubscriptionView(generic.View):
+class CreateSubscriptionView(APIView):
     def post(self, request, *args, **kwargs):
-        data = request.POST
+        data = request.data
+        print(data)
         customer_id = request.user.stripe_customer_id
+        print(customer_id)
 
         try:
             # Attach the payment method to the customer
@@ -50,17 +59,17 @@ class CreateSubscriptionView(generic.View):
             data = {}
             data.update(subscription)
 
-            return JsonResponse(data)
+            return Response(data)
         except Exception as e:
-            return JsonResponse({
+            return Response({
                 "error": {'message': str(e)}
             })
 
 
-class RetryInvoiceView(generic.View):
+class RetryInvoiceView(APIView):
 
     def post(self, request, *args, **kwargs):
-        data = request.POST
+        data = request.data
         customer_id = request.user.stripe_customer_id
         try:
 
@@ -83,8 +92,8 @@ class RetryInvoiceView(generic.View):
             data = {}
             data.update(invoice)
 
-            return JsonResponse(data)
+            return Response(data)
         except Exception as e:
-            return JsonResponse({
+            return Response({
                 "error": {'message': str(e)}
             })
