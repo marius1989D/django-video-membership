@@ -31,6 +31,7 @@ class Subscription(models.Model):
 
 
 class Course(models.Model):
+    pricing_tiers = models.ManyToManyField(Pricing, blank=True)
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     thumbnail = models.ImageField(upload_to='thumbnail/')
@@ -90,6 +91,8 @@ def post_email_confirmed(request, email_address, *args, **kwargs):
     subscription.status = stripe_subscription['status'] # trialing
     subscription.stripe_subscription_id = stripe_subscription['id']
     subscription.save()
+    user.stripe_customer_id = stripe_customer["id"]
+    user.save()
 
 email_confirmed.connect(post_email_confirmed)
 pre_save.connect(pre_save_course, sender=Course)
